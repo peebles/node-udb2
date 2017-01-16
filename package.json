@@ -1,6 +1,6 @@
 {
   "name": "node-udb2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A passport-based node client for udb2",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.17.4",
     "request": "^2.79.0",
     "winston": "^2.3.0"
   }

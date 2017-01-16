@@ -1,5 +1,7 @@
 "use strict";
 
+let _ = require( 'lodash' );
+
 module.exports = function( app ) {
 
   let config;
@@ -47,20 +49,22 @@ module.exports = function( app ) {
     });
   }
 
-  function requesterHas( role ) {
+  function requesterHas( requiredRoles ) {
     return function( req, res, next ) {
       if ( ! req.user.roles ) return res.status( 403 ).end();
-      if ( req.user.roles.findIndex( function( r ) { return r.name == role; } ) == -1 )
-	res.status( 403 ).end();
-      else
-	next();
+      requiredRoles = Array.isArray( requiredRoles ) ? requiredRoles : [ requiredRoles ];
+      let intersection = _.intersection( requiredRoles, _.map( req.user.roles, 'name' ) );
+      if ( intersection.length ) return next();
+      else res.status( 403 ).end(); 
     }
   }
   
-  function userHas( user, role ) {
+  function userHas( user, requiredRoles ) {
     if ( ! user.roles ) return false;
-    let i = user.roles.findIndex( function( r ) { return r.name == role; } );
-    return ( i==-1?false:true);
+    requiredRoles = Array.isArray( requiredRoles ) ? requiredRoles : [ requiredRoles ];
+    let intersection = _.intersection( requiredRoles, _.map( user.roles, 'name' ) );
+    if ( intersection.length ) return true;
+    else return false;
   }
 
   function filter( qs ) {
