@@ -35,7 +35,9 @@ function authenticated( req, res, next ) {
   var realm = req.headers['realm' ] || 'local';
   passport.authenticate( realm, function( err, user, info ) {
     // if err, use err.message
+    if ( err ) return res.status( 401 ).send( err.message );
     // if !user, use info.message
+    if ( ! user ) return res.status( 401 ).send( info.message );
     // IMPORTANT!  Adjust the session expires to match the
     // values used in udb
     if ( user.session && user.session.expire ) {
