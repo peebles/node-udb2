@@ -27,7 +27,7 @@ passport.serializeUser( udb.defaultUserSerializer );
 passport.deserializeUser( udb.defaultUserDeserializer );
 passport.use( "local", new LocalStrategy(
   { usernameField: 'email', passwordField: 'password' },
-  udb.defaultUserAuthenticator );
+  udb.defaultUserAuthenticator ));
 
 // Middleware
 function authenticated( req, res, next ) {
@@ -51,8 +51,8 @@ function authenticated( req, res, next ) {
   })( req, res, next );
 }
 
-app.post( '/endpoint', authenticated, udb.has( "admin" ), function( req, res, next ) {
-  if ( udb.has( req.user, "admin" ) ) { ... }
+app.post( '/endpoint', authenticated, udb.requestorHas( ["super-admin","admin"] ), function( req, res, next ) {
+  if ( udb.userHas( req.user, "admin" ) ) { ... }
   udb.request({
     uri: "/db/accounts/" + req.user.account.id + "/users",
     method: "GET",

@@ -71,6 +71,10 @@ module.exports = function( app ) {
     return { filter: JSON.stringify( qs ) };
   }
 
+  function where( qs ) {
+    return { where: JSON.stringify( qs ) };
+  }
+
   function request( opts, cb ) {
     _request( opts, function( err, res, body ) {
       if ( err ) return cb( err );
@@ -80,9 +84,16 @@ module.exports = function( app ) {
       if ( res.statusCode == 404 ) return cb( null, null );
       
       if ( res.statusCode >= 400 ) {
-	let e = new Error( body || res.statusMessage );
-	e.code = res.statusCode;
-	return cb( e );
+	if ( typeof body == 'object' ) {
+	  let e = new Error( body.error.message );
+	  e.code = body.error.status;
+	  return cb( e );
+	}
+	else {
+	  let e = new Error( body || res.statusMessage );
+	  e.code = res.statusCode;
+	  return cb( e );
+	}
       }
       
       if ( typeof body == 'object' ) return cb( null, body );
@@ -102,6 +113,7 @@ module.exports = function( app ) {
     requesterHas: requesterHas,
     userHas: userHas,
     filter: filter,
+    where: where,
     request: request,
   };
 }
