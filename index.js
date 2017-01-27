@@ -76,7 +76,7 @@ module.exports = function( app ) {
   }
 
   function request( opts, cb ) {
-    _request( opts, function( err, res, body ) {
+    return _request( opts, function( err, res, body ) {
       if ( err ) return cb( err );
 
       // A 404 could mean you tried a url that does not exist, or it should mean
