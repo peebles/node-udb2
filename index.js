@@ -93,6 +93,8 @@ module.exports = function( app ) {
 	    e.code = body.error.status;
 	  }
 	  else if ( body.message ) {
+	    // This may be Kong indicating that the token has expired
+	    if ( body.message.match( /^Bad token/ ) ) body.message = 'User Management API key is incorrect or expired.';
 	    e = new Error( body.message );
 	    e.code = res.statusCode;
 	  }
