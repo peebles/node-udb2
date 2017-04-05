@@ -105,7 +105,9 @@ module.exports = function( app ) {
 	  return cb( e );
 	}
 	else {
-	  let e = new Error( body || res.statusMessage );
+	  let text = body || res.statusMessage;
+	  if ( text.match( /^Bad token/ ) ) text = 'User Management API key is incorrect or expired.';
+	  let e = new Error( text );
 	  e.code = res.statusCode;
 	  return cb( e );
 	}
@@ -113,10 +115,12 @@ module.exports = function( app ) {
       
       if ( typeof body == 'object' ) return cb( null, body );
 
-      if ( body && res.headers && res.headers['content-type'].match( /^application\/json/ ) )
+      if ( body && res.headers && res.headers['content-type'].match( /^application\/json/ ) ) {
 	return cb( null, JSON.parse( body ) );
-      else
+      }
+      else {
 	return cb( null, body );
+      }
     });
   }
   
