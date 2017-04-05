@@ -16,6 +16,14 @@ udb.initialize({
   baseUrl: config.udb.baseUrl
 });
 
+// if using kong and jwt token:
+// udb.initialize({
+//   baseUrl: config.udb.baseUrl,
+//   auth: {
+//     bearer: "JWT-TOKEN"
+//   }
+// });
+
 app.use( session( config.session ) );
 
 // passport
