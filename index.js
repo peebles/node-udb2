@@ -11,6 +11,7 @@ module.exports = function( app ) {
   function initialize( _config ) {
     config = _config;
 
+    //app.log.debug( 'node-udb2: config:', config );
     _request = require( 'request' ).defaults( config );
 
     if ( app.log ) log = app.log;
@@ -76,6 +77,7 @@ module.exports = function( app ) {
   }
 
   function request( opts, cb ) {
+    // app.log.debug( 'node-udb2: request:', opts );
     return _request( opts, function( err, res, body ) {
       if ( err ) return cb( err );
 
@@ -85,8 +87,19 @@ module.exports = function( app ) {
       
       if ( res.statusCode >= 400 ) {
 	if ( typeof body == 'object' ) {
-	  let e = new Error( body.error.message );
-	  e.code = body.error.status;
+	  let e;
+	  if ( body.error ) {
+	    e = new Error( body.error.message );
+	    e.code = body.error.status;
+	  }
+	  else if ( body.message ) {
+	    e = new Error( body.message );
+	    e.code = res.statusCode;
+	  }
+	  else {
+	    e = new Error( JSON.stringify( body ) );
+	    e.code = res.statusCode;
+	  }
 	  return cb( e );
 	}
 	else {
