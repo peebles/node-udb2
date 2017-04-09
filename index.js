@@ -76,6 +76,15 @@ module.exports = function( app ) {
     return { where: JSON.stringify( qs ) };
   }
 
+  // Not all connectors work the same!! In particular, mssql cannot do regexp.  But postgres
+  // does not honor case insensivite ilike!
+  function dbRegexp( q, dbType ) {
+    if ( dbType == 'mssql' || dbType == 'mysql' )
+      return { ilike: '%' + q + '%' };
+    else
+      return { regexp: '/' + q + '/i' };      
+  }
+  
   function request( opts, cb ) {
     // app.log.debug( 'node-udb2: request:', opts );
     return _request( opts, function( err, res, body ) {

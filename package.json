@@ -1,6 +1,6 @@
 {
   "name": "node-udb2",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A passport-based node client for udb2",
   "main": "index.js",
   "scripts": {
