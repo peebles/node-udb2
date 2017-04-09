@@ -148,6 +148,7 @@ module.exports = function( app ) {
     userHas: userHas,
     filter: filter,
     where: where,
+    dbRegexp: dbRegexp,
     request: request,
   };
 }
