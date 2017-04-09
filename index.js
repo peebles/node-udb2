@@ -83,10 +83,10 @@ module.exports = function( app ) {
   }
 
   // Not all connectors work the same!! In particular, mssql cannot do regexp.  But postgres
-  // does not honor case insensivite ilike!
+  // (and other connectors) bomb on ilike, and seem to be ok with a regexp (for case insensitivity).
   function dbRegexp( q ) {
     if ( options.datasource == 'mssql' || options.datasource == 'mysql' )
-      return { ilike: '%' + q + '%' };
+      return { like: '%' + q + '%' };
     else
       return { regexp: '/' + q + '/i' };      
   }
