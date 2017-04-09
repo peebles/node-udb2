@@ -7,16 +7,22 @@ module.exports = function( app ) {
   let config;
   let _request;
   let log;
+
+  let options = {};
   
   function initialize( _config ) {
     config = _config;
-
+    if ( config.options ) {
+      options = _.cloneDeep( config.options );
+      delete config.options;
+    }
     //app.log.debug( 'node-udb2: config:', config );
     _request = require( 'request' ).defaults( config );
 
     if ( app.log ) log = app.log;
     else {
-      log = require( 'winston' ).configure({
+      let winston = require( 'winston' );
+      log = new (winston.Logger)({
 	transports: [
 	  new (winston.transports.Console)({
 	    level: 'debug',
@@ -78,8 +84,8 @@ module.exports = function( app ) {
 
   // Not all connectors work the same!! In particular, mssql cannot do regexp.  But postgres
   // does not honor case insensivite ilike!
-  function dbRegexp( q, dbType ) {
-    if ( dbType == 'mssql' || dbType == 'mysql' )
+  function dbRegexp( q ) {
+    if ( options.datasource == 'mssql' || options.datasource == 'mysql' )
       return { ilike: '%' + q + '%' };
     else
       return { regexp: '/' + q + '/i' };      
