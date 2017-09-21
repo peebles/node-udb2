@@ -48,7 +48,7 @@ module.exports = function( app ) {
     request({
       uri: "/auth/authenticate",
       method: "POST",
-      json: { email: email, password: password }
+      json: { email: email, password: password, accountId: config.accountId }
     }, function( err, user ) {
       if ( ! err ) return cb( null, user );
       if ( err.code == 403 ) return cb( null, false, { message: err.message } );
